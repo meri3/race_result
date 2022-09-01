@@ -19,7 +19,7 @@ class Race
     #[ORM\Column(length: 255)]
     private ?string $raceName = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\OneToMany(mappedBy: 'race', targetEntity: Result::class)]
@@ -59,6 +59,7 @@ class Race
         return $this;
     }
 
+
     /**
      * @return Collection<int, Result>
      */
@@ -89,3 +90,4 @@ class Race
         return $this;
     }
 }
+
