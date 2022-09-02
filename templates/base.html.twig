@@ -18,7 +18,7 @@
         {% block body %}{% endblock %}
 
 
-<form class="form" action="/show" id="upload_csv" method="post" enctype="multipart/form-data">
+<form class="form" action="http://localhost:8000/upload" id="upload_csv" method="post" enctype="multipart/form-data">
 <fieldset>
 </div>
     </div>
@@ -40,10 +40,19 @@
 </div>
     <button  type="submit" name="upload" id="upload" class="btn btn-primary">OK</button> 
 {# <input type="submit" name="upload" id="upload" value="Upload" style="margin-top:10px;" class="btn btn.info" /> #}
- -- <div id="csv_file_data"></div>
+<br>
+ -- <div id="csv_file_data">
+ {% for file in files %}
+ <tr>
+    <td><a href="#">{{file.id}}</a></td>
+    <td><a href="/download-file/{{ file.id }}">{{ file.raceName }}</a></td>
+    <td><a href="#">{{file.raceName}}</a></td>
+    <td><a href="#">{{file.raceName}}</a></td>
+ </tr>
+ {% endfor %}
+ </div>
   </fieldset>
 </form>
     </body>
 </html>
-    </body>
-</html>
+

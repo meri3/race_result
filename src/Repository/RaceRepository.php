@@ -39,6 +39,21 @@ class RaceRepository extends ServiceEntityRepository
         }
     }
 
+    public function save(Race $race)
+    {
+        $this->getEntityManager()->persist($race);
+        $this->getEntityManager()->flush();
+    }
+
+    public function delete(Race $race)
+    {
+        $this->getEntityManager()->remove($race);
+        $this->getEntityManager()->flush();
+    }
+
+
+
+
 //    /**
 //     * @return Race[] Returns an array of Race objects
 //     */

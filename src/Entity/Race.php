@@ -17,10 +17,10 @@ class Race
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $raceName = null;
+    public ?string $raceName = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    #[ORM\Column(length: 255)]
+    private ?string $date = null;
 
     #[ORM\OneToMany(mappedBy: 'race', targetEntity: Result::class)]
     private Collection $results;
@@ -47,12 +47,12 @@ class Race
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?string
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDate(string $date): self
     {
         $this->date = $date;
 
