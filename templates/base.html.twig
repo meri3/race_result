@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html>
-    <head>
+    {# <head>
+        <script>
+function validateForm() {
+  var x = document.forms["form"]["inputRaceName1"].value;   ----> pokusaj pravljenja alerta ako nisu unesena polja
+  var y = document.form["form"]["inputDate1"].value;
+  if (x == "" || x == null || y =="" || y == null)  {
+    alert("Name must be filled out");
+    return false;
+  }
+}
+</script> #}
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
         <link rel="stylesheet" href="https://bootswatch.com/5/cerulean/bootstrap.css">
             {{ encore_entry_link_tags('app') }}
@@ -18,7 +27,10 @@
         {% block body %}{% endblock %}
 
 
-<form class="form" action="http://localhost:8000/upload" id="upload_csv" method="post" enctype="multipart/form-data">
+<form class="form" name = "form" action="http://localhost:8000/upload" id="upload_csv" method="post" enctype="multipart/form-data">
+<br>
+<h1 class="title-form", style="text-align:center">Form</h1>
+<br>
 <fieldset>
 </div>
     </div>
@@ -39,17 +51,18 @@
   <br>
 </div>
     <button  type="submit" name="upload" id="upload" class="btn btn-primary">OK</button> 
+
 {# <input type="submit" name="upload" id="upload" value="Upload" style="margin-top:10px;" class="btn btn.info" /> #}
 <br>
  -- <div id="csv_file_data">
- {% for file in files %}
+ {# {% for file in files %}
  <tr>
     <td><a href="#">{{file.id}}</a></td>
     <td><a href="/download-file/{{ file.id }}">{{ file.raceName }}</a></td>
     <td><a href="#">{{file.raceName}}</a></td>
     <td><a href="#">{{file.raceName}}</a></td>
  </tr>
- {% endfor %}
+ {% endfor %} #}
  </div>
   </fieldset>
 </form>

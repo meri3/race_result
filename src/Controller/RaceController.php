@@ -2,18 +2,21 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
+use App\Entity\Race;
 use App\Repository\RaceRepository;
+use App\Repository\ResultRepository;
 use App\Service\CreateDbEntryService;
 use App\Service\RaceService;
+use App\Service\CreateTableService;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\RequestStack;
-
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 
@@ -23,16 +26,22 @@ class RaceController extends AbstractController
     private RaceService $raceService;
     private CreateDbEntryService $createDbEntryService;
     private RaceRepository $raceRepository;
+    private CreateTableService $createTableService;
+    private ResultRepository $resultRepository;
 
     public function __construct(
         RaceService $raceService, 
         CreateDbEntryService $createDbEntryService,
-        RaceRepository $raceRepository)
+        RaceRepository $raceRepository,
+        CreateTableService $createTableService,
+        ResultRepository $resultRepository)
         
     {
         $this->raceService = $raceService;
         $this->createDbEntryService = $createDbEntryService;
         $this->raceRepository = $raceRepository;
+        $this->createTableService = $createTableService;
+        $this->resultRepository = $resultRepository;
     }
 
     
@@ -58,7 +67,9 @@ class RaceController extends AbstractController
 
             $this->createDbEntryService->createDbEntry();
 
-            return $this->redirect(url:"/");
+            $this->createTableService->execute();
+
+            return $this->redirect(url:"/results");
         } else {
             $response = "Error";
         }
@@ -69,10 +80,15 @@ class RaceController extends AbstractController
 
 
 
+    #[Route('/results', name: 'results')]
+    public function results(): Response
+    {
+        return $this->render('/race/results.html.twig');
+    }
+ 
 
-  /**
-     * @Route ("/download-file/{id}")
-     */
+    
+    #[Route('/download-file/{id}')]
     public function downloadFile($id): BinaryFileResponse
     {
         $file = $this->raceRepository->find($id);
