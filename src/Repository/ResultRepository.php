@@ -39,6 +39,18 @@ class ResultRepository extends ServiceEntityRepository
         }
     }
 
+    public function save(Result $race)
+    {
+        $this->getEntityManager()->persist($race);
+        $this->getEntityManager()->flush();
+    }
+
+    public function delete(Result $race)
+    {
+        $this->getEntityManager()->remove($race);
+        $this->getEntityManager()->flush();
+    }
+
 //    /**
 //     * @return Result[] Returns an array of Result objects
 //     */

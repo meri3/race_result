@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Race;
 use App\Repository\RaceRepository;
 use App\Repository\ResultRepository;
+use App\Service\CreateDbEntryServiceResult;
 use App\Service\CreateDbEntryServiceRace;
 use App\Service\RaceService;
 use App\Service\CreateTableService;
@@ -24,28 +25,31 @@ class RaceController extends AbstractController
 {
 
     private RaceService $raceService;
-    private CreateDbEntryServiceRace $CreateDbEntryServiceRace;
+    private CreateDbEntryServiceRace $createDbEntryServiceRace;
+    private CreateDbEntryServiceResult $createDbEntryServiceResult;
     private RaceRepository $raceRepository;
     private CreateTableService $createTableService;
     private ResultRepository $resultRepository;
 
     public function __construct(
         RaceService $raceService, 
-        CreateDbEntryServiceRace $CreateDbEntryServiceRace,
+        CreateDbEntryServiceRace $createDbEntryServiceRace,
+        CreateDbEntryServiceResult $createDbEntryServiceResult,
         RaceRepository $raceRepository,
         CreateTableService $createTableService,
         ResultRepository $resultRepository)
         
     {
         $this->raceService = $raceService;
-        $this->CreateDbEntryServiceRace = $CreateDbEntryServiceRace;
+        $this->createDbEntryServiceRace = $createDbEntryServiceRace;
+        $this->createDbEntryServiceResult = $createDbEntryServiceResult;
         $this->raceRepository = $raceRepository;
         $this->createTableService = $createTableService;
         $this->resultRepository = $resultRepository;
     }
 
     
-    #[Route('/race', name: 'form')]
+    #[Route('/race', name: 'app_race')]
     public function index(): Response
     {
         $files = $this->raceRepository->findAll();
@@ -58,6 +62,25 @@ class RaceController extends AbstractController
         ]);
     }
 
+    // #[Route('/upload', name: 'upload')]
+    // public function uploadFile()
+    // {
+    //     $response = "";
+
+    //     if($this->raceService->uploadFile()){
+
+    //         $this->createDbEntryServiceRace->createDbEntry();
+
+    //         // $this->createTableService->execute($input, $output);
+
+    //         return $this->redirect(url:"/results");
+    //     } else {
+    //         $response = "Error";
+    //     }
+    //     return $response;
+
+    // }
+
     #[Route('/upload', name: 'upload')]
     public function uploadFile()
     {
@@ -65,7 +88,7 @@ class RaceController extends AbstractController
 
         if($this->raceService->uploadFile()){
 
-            $this->CreateDbEntryServiceRace->createDbEntry();
+            $this->createDbEntryServiceResult->uploadAndInjectCSV();
 
             // $this->createTableService->execute($input, $output);
 
@@ -77,29 +100,36 @@ class RaceController extends AbstractController
 
     }
 
-    #[Route('/results', name: 'csv_file')]
-    public function readCSV(): BinaryFileResponse
-    {
-        $csvFile = file('Downloadsresults.csv');
-        $data = [];
-        foreach ($csvFile as $line){
-            $data[] = str_getcsv($line);
+    // #[Route('/results', name: 'csv_file')]
+    // public function readCSV(): BinaryFileResponse
+    // {
+    //     $csvFile = file('Downloadsresults.csv');
+    //     $data = [];
+    //     foreach ($csvFile as $line){
+    //         $data[] = str_getcsv($line);
             
-            return $this-> $csvFile;
-        }
+    //         return $this-> $csvFile;
+    //     }
 
-        // return new Response(
-        //     'There are no jobs in the database', 
-        //     Response::HTTP_ACCEPTED
-        // );
-    }
+    //     // return new Response(
+    //     //     'There are no jobs in the database', 
+    //     //     Response::HTTP_ACCEPTED
+    //     // );
+    // }
     
 
 
     #[Route('/results', name: 'results')]
     public function results(): Response
     {
-        return $this->render('/race/results.html.twig');
+        $files = $this->raceRepository->findAll();
+        $file = $this->raceRepository->findAll();
+
+        return $this->render('/race/results.html.twig',  [
+            'controller_name' => 'RaceController',
+            "files"=>$files,
+            "file"=>$file
+        ]);
     }
  
 
