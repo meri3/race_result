@@ -47,19 +47,17 @@ function validateForm() {
     <div class="d-grid gap-2">
    {# - <form id="upload_csv" method="post" enctype="multipart/form-data">  #}
   {# <button class="btn btn-lg btn-primary" type="button" style="height:50px;width:200px">Import CSV</button> #}
-  <input type="file" name="csv_file" id="csv_file", accept=".csv" style="margin-top:15px;" />
+  <input type="file"  name="csv_file" id="csv_file", accept=".csv" style="margin-top:15px;" />
   <br>
 </div>
-    <button  type="submit" name="upload" id="upload" class="btn btn-primary">OK</button> 
+    <button action="ImportCsvToMySqlService.php" type="submit" name="upload" id="upload" class="btn btn-primary">OK</button> 
 
 {# <input type="submit" name="upload" id="upload" value="Upload" style="margin-top:10px;" class="btn btn.info" /> #}
 <br>
  -- <div id="csv_file_data">
  {% for file in files %}
- <tr>
-    
-    <td><a href="/download-file/{{ file.id }}">{{ file.raceName }}</a></td>
-    <td><a href="/download-file/{{ file.id }}">{{ file.Date }}</a></td>
+{{ file.raceName }}
+{{ file.Date }}
     <br>
  </tr>
  {% endfor %}
