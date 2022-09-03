@@ -55,14 +55,14 @@ function validateForm() {
 {# <input type="submit" name="upload" id="upload" value="Upload" style="margin-top:10px;" class="btn btn.info" /> #}
 <br>
  -- <div id="csv_file_data">
- {# {% for file in files %}
+ {% for file in files %}
  <tr>
     <td><a href="#">{{file.id}}</a></td>
     <td><a href="/download-file/{{ file.id }}">{{ file.raceName }}</a></td>
-    <td><a href="#">{{file.raceName}}</a></td>
-    <td><a href="#">{{file.raceName}}</a></td>
+    <td><a href="/download-file/{{ file.id }}">{{ file.Date }}</a></td>
+    <br>
  </tr>
- {% endfor %} #}
+ {% endfor %}
  </div>
   </fieldset>
 </form>

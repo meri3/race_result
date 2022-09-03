@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Race;
 use App\Repository\RaceRepository;
 use App\Repository\ResultRepository;
-use App\Service\CreateDbEntryService;
+use App\Service\CreateDbEntryServiceRace;
 use App\Service\RaceService;
 use App\Service\CreateTableService;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
@@ -24,28 +24,28 @@ class RaceController extends AbstractController
 {
 
     private RaceService $raceService;
-    private CreateDbEntryService $createDbEntryService;
+    private CreateDbEntryServiceRace $CreateDbEntryServiceRace;
     private RaceRepository $raceRepository;
     private CreateTableService $createTableService;
     private ResultRepository $resultRepository;
 
     public function __construct(
         RaceService $raceService, 
-        CreateDbEntryService $createDbEntryService,
+        CreateDbEntryServiceRace $CreateDbEntryServiceRace,
         RaceRepository $raceRepository,
         CreateTableService $createTableService,
         ResultRepository $resultRepository)
         
     {
         $this->raceService = $raceService;
-        $this->createDbEntryService = $createDbEntryService;
+        $this->CreateDbEntryServiceRace = $CreateDbEntryServiceRace;
         $this->raceRepository = $raceRepository;
         $this->createTableService = $createTableService;
         $this->resultRepository = $resultRepository;
     }
 
     
-    #[Route('/race', name: 'app_race')]
+    #[Route('/race', name: 'form')]
     public function index(): Response
     {
         $files = $this->raceRepository->findAll();
@@ -65,9 +65,9 @@ class RaceController extends AbstractController
 
         if($this->raceService->uploadFile()){
 
-            $this->createDbEntryService->createDbEntry();
+            $this->CreateDbEntryServiceRace->createDbEntry();
 
-            $this->createTableService->execute();
+            // $this->createTableService->execute($input, $output);
 
             return $this->redirect(url:"/results");
         } else {
@@ -77,7 +77,23 @@ class RaceController extends AbstractController
 
     }
 
+    #[Route('/results', name: 'csv_file')]
+    public function readCSV(): BinaryFileResponse
+    {
+        $csvFile = file('Downloadsresults.csv');
+        $data = [];
+        foreach ($csvFile as $line){
+            $data[] = str_getcsv($line);
+            
+            return $this-> $csvFile;
+        }
 
+        // return new Response(
+        //     'There are no jobs in the database', 
+        //     Response::HTTP_ACCEPTED
+        // );
+    }
+    
 
 
     #[Route('/results', name: 'results')]
@@ -89,12 +105,21 @@ class RaceController extends AbstractController
 
     
     #[Route('/download-file/{id}')]
-    public function downloadFile($id): BinaryFileResponse
+    public function downloadFile($id): Response
     {
         $file = $this->raceRepository->find($id);
 
-        return $this->file($_SERVER['DOCUMENT_ROOT']."/Downloads/".$file->getName());
+        return $this->file($_SERVER['DOCUMENT_ROOT']."/Downloads/".$file->getraceName());
     }
+
+    // #[Route('/download-file/{id}')]
+    // public function downloadFile1(): Response
+    // {
+
+    //     // $file = $this->
+
+    //     return $this->render("/race/results.html.twig");
+    // }
 
 
 }

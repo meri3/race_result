@@ -1,3 +1,6 @@
+{# {% extends 'race/index.html.twig' %} #}
+
+   {% block body %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,4 +17,36 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}<h1>kdasldjlsa</h1>{% endblock %}
+     
+        <h1>Tables:</h1>
+        
+     {% block content %}
+     <table><caption>Medium Distance Table</caption>
+     <thead>
+     <tr>
+          <th>Average Finish Time:</th>
+          <th colspan="2">Vrime koje bi tribalo izracunat iz podataka</th>
+     </tr>
+     </thead>
+     <tbody>
+     <tr>
+          <th>Full Name</th>
+          <th>Finish Time </th>
+          <th>Placement</th>
+          <th>          </th>
+     </tr>
+          <td>Ime Ucesnika</td>
+          <td>Vrijeme zavrsetka</td>
+          <td>Mjesto</td>
+          <td>Edit</td>
+     </tbody>
+     
+     
+     </table>
+          
+          
+     {% endblock %}
+        
+        
+        
+        {% endblock %}

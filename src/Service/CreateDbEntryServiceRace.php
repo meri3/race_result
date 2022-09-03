@@ -6,7 +6,7 @@ use App\Entity\Race;
 use App\Repository\RaceRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class CreateDbEntryService extends RaceService
+class CreateDbEntryServiceRace extends RaceService
 {
      private RaceRepository $raceRepository;
      

@@ -27,6 +27,9 @@ class Result
     #[ORM\JoinColumn(nullable: false)]
     private ?Race $race = null;
 
+    #[ORM\Column]
+    private ?int $placement = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +79,18 @@ class Result
     public function setRace(?Race $race): self
     {
         $this->race = $race;
+
+        return $this;
+    }
+
+    public function getPlacement(): ?int
+    {
+        return $this->placement;
+    }
+
+    public function setPlacement(int $placement): self
+    {
+        $this->placement = $placement;
 
         return $this;
     }
