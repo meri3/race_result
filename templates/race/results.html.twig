@@ -16,14 +16,15 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
         {# <h1>{{file.raceName}}</h1> #}
-        <h1>$display_table</h1>
+      
     </head>
     <body>
     {% for file in files %}
-     <h1> {{file.raceName}}</h1>
-     <h2> {{file.date}}</h2>
+     <h4> {{file.raceName}}</h4>
+     <h4> {{file.date}}</h4>
 
  {% endfor %}
+
      
         <h1>Tables:</h1>
         

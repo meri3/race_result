@@ -2,15 +2,18 @@
 
 namespace App\Service;
 
+
 class ImportCsvService
 {
  function csvImportToMysql()
  {
  if(isset($_POST["upload"])){
     
-    $filename=$_FILES["file"]["tmp_name"];    
-     if($_FILES["file"]["size"] > 0)
+    $filename=$_FILES["csv_file"]["tmp_name"];    
+    
+    if($_FILES["csv_file"]["size"] > 0)
      {
+      
         $file = fopen($filename, "r");
           while (($getData = fgetcsv($file, 10000, ",")) !== FALSE)
            {

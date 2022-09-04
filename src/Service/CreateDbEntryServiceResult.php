@@ -23,7 +23,7 @@ class CreateDbEntryServiceResult extends RaceService
 
      }
 
-}
+
 //      public function upload_csv()
 //      {
 //           $display_table =$_REQUEST['csv_file'] ?? null;
@@ -34,72 +34,71 @@ class CreateDbEntryServiceResult extends RaceService
 
 
 
-// public function uploadAndInjectCSV() 
-// {
+public function uploadAndInjectCSV() 
+{
+     $content = $_FILES['csv_file'];
+     // file_get_contents($_FILES['csv_file']['tmp_name']);
+     // $content = fgetcsv($_FILES['csv_file']['tmp_name']);
 
-//      // $file = $_FILES['csv_file'];
-//      // file_get_contents($_FILES['csv_file']['tmp_name']);
-//      $content = fgetcsv($_FILES['csv_file']['tmp_name']);
 
+     $race = new Race;
 
-//      $race = new Race;
-
-//      $raceName = $_POST['inputRaceName1'];
-//      $date     = $_POST['inputDate1'];
+     $raceName = $_POST['inputRaceName1'];
+     $date     = $_POST['inputDate1'];
      
      
-//      $race->setRaceName($raceName);
-//      $race->setDate($date);
+     $race->setRaceName($raceName);
+     $race->setDate($date);
      
-//      $this->raceRepository->save($race);
+     $this->raceRepository->save($race);
 
 
-//      // echo $raceName;
-//      // return $raceName;
-//      foreach ($content as $data){
-//               $result = new Result;
-//                     $result ->setRace($race);
-//                     $result-> setFullName($data);
-//                     $result -> setRaceTime(new \DateTime());
-//                     $result -> setDistance(100);
-//                     $result-> setPlacement(1); 
+     // echo $raceName;
+     // return $raceName;
+     foreach ($content as $data){
+              $result = new Result;
+                    $result ->setRace($race);
+                    $result-> setFullName($data);
+                    $result -> setRaceTime(new \DateTime());
+                    $result -> setDistance(100);
+                    $result-> setPlacement(1); 
                     
-//                     $this->resultRepository->save($result);
-//      }
+                    $this->resultRepository->save($result);
+     }
 
-     // Form creation ommited
+     // // Form creation ommited
     
-//      $form->handleRequest($request);
+     // // $form->handleRequest($request);
      
-//      if ($form->isSubmitted() && $form->isValid()) { 
-//           $file = $form->get('csv_file')->getData();
+     // // if ($form->isSubmitted() && $form->isValid()) { 
+     // //      $file = $form->get('csv_file')->getData();
           
-//           Opent the file
-//           if (($handle = fopen($file->getPathName(), "r")) !==false){
+     // //      // Opent the file
+     //      if (($handle = fopen($file->getPathName(), "r")) !==false){
 
-//                // Read and procss the lines
-//                // Skip the first line if hte file contains a header
-//                while (($data = fgetcsv($file)) !==false) {
-//                     //Do the processing: Map line to entity, validate if needed
-//                     $result = new Result;
+     //           // Read and procss the lines
+     //           // Skip the first line if hte file contains a header
+     //           while (($data = fgetcsv($file)) !==false) {
+     //                //Do the processing: Map line to entity, validate if needed
+     //                $result = new Result;
 
-//                     $result -> setFullName($data[0]);
-//                     $result -> setRaceTime($data[1]);
-//                     $result -> setDistance($data[2]);
-//                     $result-> setPlacement($data[3]);
+     //                $result -> setFullName($data[0]);
+     //                $result -> setRaceTime($data[1]);
+     //                $result -> setDistance($data[2]);
+     //                $result-> setPlacement($data[3]);
 
-//                     // $em->persist($result);
-//                     $this->resultRepository->save($result);
+     //                // $em->persist($result);
+     //                $this->resultRepository->save($result);
 
-//                     return $result;
-//                }
+     //                return $result;
+     //           }
 
-//                fclose($handle);
-//                $em->flush();
+     //           fclose($handle);
+     //           $em->flush();
                
-//           }
+     //      }
 
-//      }
+     }
 
 
-// }
+}

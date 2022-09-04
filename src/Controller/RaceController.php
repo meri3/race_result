@@ -8,7 +8,6 @@ use App\Repository\ResultRepository;
 use App\Service\CreateDbEntryServiceResult;
 use App\Service\CreateDbEntryServiceRace;
 use App\Service\RaceService;
-use App\Service\CreateTableService;
 use App\Service\ImportCsvService;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,7 +28,6 @@ class RaceController extends AbstractController
     private CreateDbEntryServiceRace $createDbEntryServiceRace;
     private CreateDbEntryServiceResult $createDbEntryServiceResult;
     private RaceRepository $raceRepository;
-    private CreateTableService $createTableService;
     private ImportCsvService $importCsvService;
     private ResultRepository $resultRepository;
 
@@ -38,7 +36,6 @@ class RaceController extends AbstractController
         CreateDbEntryServiceRace $createDbEntryServiceRace,
         CreateDbEntryServiceResult $createDbEntryServiceResult,
         RaceRepository $raceRepository,
-        CreateTableService $createTableService,
         ImportCsvService $importCsvService,
         ResultRepository $resultRepository)
         
@@ -47,7 +44,6 @@ class RaceController extends AbstractController
         $this->createDbEntryServiceRace = $createDbEntryServiceRace;
         $this->createDbEntryServiceResult = $createDbEntryServiceResult;
         $this->raceRepository = $raceRepository;
-        $this->createTableService = $createTableService;
         $this->importCsvService = $importCsvService;
         $this->resultRepository = $resultRepository;
     }
@@ -57,24 +53,50 @@ class RaceController extends AbstractController
     public function index(): Response
     {
         $files = $this->raceRepository->findAll();
+        // $csv_file = $this->importCsvService->csvImportToMySql();
+        // $csv_file1 = $this->createDbEntryServiceResult->uploadAndInjectCSV();
+
 
         return $this->render('race/index.html.twig', 
         
         [
             'controller_name' => 'RaceController',
-            "files"=>$files
+            "files"=>$files,
+            // "csv_file" => $csv_file,
+            // "csv_file1" => $csv_file1
+
         ]);
     }
 
-    #[Route('/race', name: 'csv_upload')]
-    public function uploadCsv()
-    {
-        $csv_file = $this->importCsvService->csvImportToMySql();
+    // #[Route('/race', name: 'csv_upload')]
+    // public function uploadCsv()
+    // {
+    //     $csv_file = $this->importCsvService->csvImportToMySql();
 
-        return $this->render('race/index.html.twig',
-        [
-            "csv_file" => $csv_file
-        ]);
+    //     return $this->render('race/index.html.twig',
+    //     [
+    //         "csv_file" => $csv_file
+    //     ]);
+    // }
+
+    #[Route('/upload', name: 'upload')]
+    public function uploadFile()
+    {
+        $response = "";
+
+        if($this->raceService->uploadFile()){
+
+            $this->createDbEntryServiceRace->createDbEntry();
+            $this->createDbEntryServiceResult->uploadAndInjectCSV();
+
+            // $this->createTableService->execute($input, $output);
+
+            return $this->redirect(url:"/results");
+        } else {
+            $response = "Error";
+        }
+        return $response;
+
     }
 
     // #[Route('/upload', name: 'upload')]
@@ -85,6 +107,7 @@ class RaceController extends AbstractController
     //     if($this->raceService->uploadFile()){
 
     //         $this->createDbEntryServiceRace->createDbEntry();
+    //         $this->createDbEntryServiceRace->createCSVEntry();
 
     //         // $this->createTableService->execute($input, $output);
 
@@ -96,14 +119,16 @@ class RaceController extends AbstractController
 
     // }
 
-    #[Route('/upload', name: 'upload')]
-    public function uploadFile()
+    #[Route('/results', name: 'results')]
+    public function readCsvFile()
     {
         $response = "";
 
         if($this->raceService->uploadFile()){
 
             $this->createDbEntryServiceRace->createDbEntry();
+
+            $this->importCsvService->csvImportToMysql();
 
             // $this->createTableService->execute($input, $output);
 
@@ -114,6 +139,7 @@ class RaceController extends AbstractController
         return $response;
 
     }
+
 
     // #[Route('/results', name: 'results')]
     // public function seeCSV()
@@ -150,7 +176,7 @@ class RaceController extends AbstractController
     //     // );
     // }
     
-
+   
 
     #[Route('/results', name: 'results')]
     public function results(): Response
