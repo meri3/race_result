@@ -87,7 +87,7 @@ class RaceController extends AbstractController
         if($this->raceService->uploadFile()){
 
             $this->createDbEntryServiceRace->createDbEntry();
-            $this->createDbEntryServiceResult->uploadAndInjectCSV();
+            // $this->createDbEntryServiceResult->uploadAndInjectCSV();
 
             // $this->createTableService->execute($input, $output);
 

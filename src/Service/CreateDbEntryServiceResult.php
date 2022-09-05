@@ -2,11 +2,13 @@
 
 namespace App\Service;
 
+
 use App\Entity\Race;
 use App\Entity\Result;
 use App\Repository\ResultRepository;
 use App\Repository\RaceRepository;
 use Doctrine\ORM\EntityManager;
+use mysqli;
 use Symfony\Component\BrowserKit\Request;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -36,7 +38,9 @@ class CreateDbEntryServiceResult extends RaceService
 
 public function uploadAndInjectCSV() 
 {
-     $content = $_FILES['csv_file'];
+     include_once 'db.php';
+     // $content = $_FILES['csv_file'];
+     // fgetcsv($content);
      // file_get_contents($_FILES['csv_file']['tmp_name']);
      // $content = fgetcsv($_FILES['csv_file']['tmp_name']);
 
@@ -52,10 +56,33 @@ public function uploadAndInjectCSV()
      
      $this->raceRepository->save($race);
 
+     if (isset($_POST['upload']) && (!empty($_FILES['csv_file'])))
+     {
 
-     // echo $raceName;
-     // return $raceName;
-     foreach ($content as $data){
+          $csvFile = fopen($_FILES['csv_file']['tmp_name'], 'r');  
+          fgetcsv($csvFile);             
+          // fgetcsv($content);
+
+               while(($getData = fgetcsv($csvFile, 1000, ",")) !==FALSE)
+               {
+                    $fullName = $getData[0];
+                    $distance = $getData[1];
+                    $raceTime = $getData[2];
+
+
+                    $query = "SELECT id FROM users WHERE fullName = '" . $getData[0] . "'";
+                    $check = mysqli_query($conn, $query);
+
+                    if($check -> num_rows > 0)
+                    {
+                         mysqli_query($conn, "UPDATE RESULT SET full_name = ' " .$fullName. " ' , distance = ' " . $distance . " ', race_time = ' " . $raceTime . " '");
+                    }            
+                    else
+                    {
+                         mysqli_query($conn, "(INSERT INTO users (full_name, race_time, distance) VALUES ('" . $fullName. "', '" .$raceTime. "', '" .$distance. "')");                
+                                    
+
+                         foreach ($content as $data){
               $result = new Result;
                     $result ->setRace($race);
                     $result-> setFullName($data);
@@ -65,6 +92,18 @@ public function uploadAndInjectCSV()
                     
                     $this->resultRepository->save($result);
      }
+                    }
+                    
+                    fclose($csvFile);
+             
+
+               }
+               
+     }
+     
+     }
+
+
 
      // // Form creation ommited
     
@@ -101,4 +140,3 @@ public function uploadAndInjectCSV()
      }
 
 
-}
