@@ -17,8 +17,6 @@ class Result
     #[ORM\Column(length: 255)]
     private ?string $fullName = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTimeInterface $raceTime = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $distance = null;
@@ -29,6 +27,9 @@ class Result
 
     #[ORM\Column]
     private ?int $placement = null;
+
+    #[ORM\Column]
+    private ?int $FinishTime = null;
 
     public function getId(): ?int
     {
@@ -47,17 +48,7 @@ class Result
         return $this;
     }
 
-    public function getRaceTime(): ?\DateTimeInterface
-    {
-        return $this->raceTime;
-    }
-
-    public function setRaceTime(\DateTimeInterface $raceTime): self
-    {
-        $this->raceTime = $raceTime;
-
-        return $this;
-    }
+  
 
     public function getDistance(): ?string
     {
@@ -91,6 +82,18 @@ class Result
     public function setPlacement(int $placement): self
     {
         $this->placement = $placement;
+
+        return $this;
+    }
+
+    public function getFinishTime(): ?int
+    {
+        return $this->FinishTime;
+    }
+
+    public function setFinishTime(int $FinishTime): self
+    {
+        $this->FinishTime = $FinishTime;
 
         return $this;
     }

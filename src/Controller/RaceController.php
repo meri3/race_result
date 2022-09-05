@@ -84,17 +84,18 @@ class RaceController extends AbstractController
     {
         $response = "";
 
-        if($this->raceService->uploadFile()){
+        // if($this->raceService->uploadFile()){
 
-            $this->createDbEntryServiceRace->createDbEntry();
-            // $this->createDbEntryServiceResult->uploadAndInjectCSV();
+            // $this->createDbEntryServiceRace->createDbEntry();
+            
+            $this->createDbEntryServiceResult->uploadAndInjectCSV();
 
             // $this->createTableService->execute($input, $output);
 
             return $this->redirect(url:"/results");
-        } else {
-            $response = "Error";
-        }
+        // } else {
+            // $response = "Error";
+        // }
         return $response;
 
     }

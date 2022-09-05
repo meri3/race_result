@@ -7,6 +7,7 @@ use App\Entity\Race;
 use App\Entity\Result;
 use App\Repository\ResultRepository;
 use App\Repository\RaceRepository;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use mysqli;
 use Symfony\Component\BrowserKit\Request;
@@ -39,7 +40,7 @@ class CreateDbEntryServiceResult extends RaceService
 public function uploadAndInjectCSV() 
 {
      include_once 'db.php';
-     // $content = $_FILES['csv_file'];
+     $content = $_FILES['csv_file'];
      // fgetcsv($content);
      // file_get_contents($_FILES['csv_file']['tmp_name']);
      // $content = fgetcsv($_FILES['csv_file']['tmp_name']);
@@ -56,7 +57,23 @@ public function uploadAndInjectCSV()
      
      $this->raceRepository->save($race);
 
-     if (isset($_POST['upload']) && (!empty($_FILES['csv_file'])))
+       // Allowed mime types
+    $fileMimes = array(
+     'text/x-comma-separated-values',
+     'text/comma-separated-values',
+     'application/octet-stream',
+     'application/vnd.ms-excel',
+     'application/x-csv',
+     'text/x-csv',
+     'text/csv',
+     'application/csv',
+     'application/excel',
+     'application/vnd.msexcel',
+     'text/plain'
+ );
+
+
+     if (isset($_POST['upload']) && (!empty($_FILES['csv_file']) && in_array($_FILES['csv_file']['type'], $fileMimes)))
      {
 
           $csvFile = fopen($_FILES['csv_file']['tmp_name'], 'r');  
@@ -65,33 +82,47 @@ public function uploadAndInjectCSV()
 
                while(($getData = fgetcsv($csvFile, 1000, ",")) !==FALSE)
                {
-                    $fullName = $getData[0];
-                    $distance = $getData[1];
-                    $raceTime = $getData[2];
 
+                     $fullName = $getData[0];
+                     $distance = $getData[1];
+                  
+                     
+                     $str_time = $getData[2];
 
-                    $query = "SELECT id FROM users WHERE fullName = '" . $getData[0] . "'";
-                    $check = mysqli_query($conn, $query);
+                    $str_time = preg_replace("/^([\d]{1,2})\:([\d]{2})$/", "00:$1:$2", $str_time);
 
-                    if($check -> num_rows > 0)
-                    {
-                         mysqli_query($conn, "UPDATE RESULT SET full_name = ' " .$fullName. " ' , distance = ' " . $distance . " ', race_time = ' " . $raceTime . " '");
-                    }            
-                    else
-                    {
-                         mysqli_query($conn, "(INSERT INTO users (full_name, race_time, distance) VALUES ('" . $fullName. "', '" .$raceTime. "', '" .$distance. "')");                
-                                    
+                    sscanf($str_time, "%d:%d:%d", $hours, $minutes, $seconds);
 
-                         foreach ($content as $data){
-              $result = new Result;
+                    $time_seconds = $hours * 3600 + $minutes * 60 + $seconds;
+
+                    $raceTime = $time_seconds ;
+
+                     
+                    $result = new Result;
                     $result ->setRace($race);
-                    $result-> setFullName($data);
-                    $result -> setRaceTime(new \DateTime());
-                    $result -> setDistance(100);
+                    $result-> setFullName($fullName);
+                    $result-> setFinishTime($raceTime);
+                    $result -> setDistance($distance);
                     $result-> setPlacement(1); 
                     
                     $this->resultRepository->save($result);
-     }
+                    // $fullName = $getData[0];
+                    // $distance = $getData[1];
+                    // $raceTime = $getData[2];
+
+
+                    // $query = "SELECT id FROM users WHERE fullName = '" . $getData[0] . "'";
+                    // $check = mysqli_query($conn, $query);
+
+                    // if($check -> num_rows > 0)
+                    // {
+                    //      mysqli_query($conn, "UPDATE RESULT SET full_name = ' " .$fullName. " ' , distance = ' " . $distance . " ', race_time = ' " . $raceTime . " '");
+                    // }            
+                    // else
+                    // {
+                    //      mysqli_query($conn, "(INSERT INTO users (full_name, race_time, distance) VALUES ('" . $fullName. "', '" .$raceTime. "', '" .$distance. "')");                
+                                    
+
                     }
                     
                     fclose($csvFile);
@@ -137,6 +168,6 @@ public function uploadAndInjectCSV()
                
      //      }
 
-     }
+     
 
 

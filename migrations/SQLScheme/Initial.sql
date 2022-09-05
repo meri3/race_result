@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Result (
     id int auto_increment,
     race_id int not null,
     full_name varchar(255) not null,
-    race_time int not null,
+    finish_time int not null,
     distance varchar(16) not null,
     placement int not null,
     primary key(id),
